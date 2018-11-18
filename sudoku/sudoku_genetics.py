@@ -62,5 +62,5 @@ def generate_random_individual(values_to_set):
 
         # Substitute value with new one in grids arrays
         individual.grids()[grid_id] = available_values
-    
+
     return individual

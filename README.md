@@ -28,4 +28,3 @@ Puzzles to solve are provided in a folder named ***"samples"***. They are stored
 in plain text files containing the values where ***'|'*** character is the grid vertical separator
 and ***'-'*** is the horizontal one. The ***'0'*** digit character is used to represent
 and unknown value, so others are known as 'fixed' values. 
-
