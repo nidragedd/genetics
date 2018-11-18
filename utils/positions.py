@@ -5,79 +5,77 @@ Created on 15/11/2018
 from random import shuffle
 
 
-def retrieve_row_id_from_global_position(global_position, sudoku_size):
+def retrieve_row_id_from_position_and_size(position, size):
     """
-    Given a position in the sudoku values, determine the id of the row (starting at 1)
-    :param global_position: (int) position in the sudoku values (starting at 1)
-    :param sudoku_size: (int) the size of the sudoku (i.e number of elements per row/column/grid)
-    :return: (int) id of the row (starting at 1)
+    Given a position in the sudoku values, determine the id of the row (starting at 0)
+    :param position: (int) position in the sudoku values (starting at 0)
+    :param size: (int) the size of the sudoku (i.e number of elements per row/column/grid)
+    :return: (int) id of the row (starting at 0)
     """
-    return int(global_position / sudoku_size) if global_position % sudoku_size == 0 \
-        else (global_position // sudoku_size) + 1
+    return position // size
 
 
-def retrieve_column_id_from_global_position(global_position, sudoku_size):
+def retrieve_column_id_from_position_and_size(position, size):
     """
-    Given a position in the sudoku values, determine the id of the row (starting at 1)
-    :param global_position: (int) position in the sudoku values (starting at 1)
-    :param sudoku_size: (int) the size of the sudoku (i.e number of elements per row/column/grid)
-    :return: (int) id of the column (starting at 1)
+    Given a position in the sudoku values, determine the id of the row (starting at 0)
+    :param position: (int) position in the sudoku values (starting at 0)
+    :param size: (int) the size of the sudoku (i.e number of elements per row/column/grid)
+    :return: (int) id of the column (starting at 0)
     """
-    return sudoku_size if global_position % sudoku_size == 0 else global_position % sudoku_size
+    return position % size
 
 
 def retrieve_grid_id_from_row_and_col(row_id, col_id, grid_size):
     """
-    Given a position by it row and column id (starting at 1), determine the id of the grid (also starting at 1)
-    :param row_id: (int) self-explained, the row id (starting at 1)
-    :param col_id: (int) self-explained, the column id (starting at 1)
+    Given a position by it row and column id (starting at 0), determine the id of the grid (also starting at 0)
+    :param row_id: (int) self-explained, the row id (starting at 0)
+    :param col_id: (int) self-explained, the column id (starting at 0)
     :param grid_size: (int) self-explained, the size of one sudoku grid (which equals to the square root of the
     sudoku size, which is the number of elements per row/column/grid)
-    :return: (int) id of the grid (starting at 1)
+    :return: (int) id of the grid (starting at 0)
     """
-    if col_id % grid_size == 0:
-        grid_id = col_id // grid_size
-    else:
-        grid_id = int(col_id / grid_size) + 1
-
-    if row_id > grid_size:
-        if row_id % grid_size == 0:
-            row_id -= 1
-        grid_id += (row_id // grid_size) * grid_size
-    return grid_id
+    return col_id // grid_size + ((row_id // grid_size) * grid_size)
 
 
 def retrieve_row_id_from_grid_id_and_position(grid_id, grid_position, grid_size):
     """
-    Given a position by it grid id and position in the grid (both starting at 1), determine the id of row (also
-    starting at 1)
-    :param grid_id: (int) self-explained, the grid id (starting at 1)
-    :param grid_position: (int) the position of the element in this grid (starting at 1)
+    Given a position by it grid id and position in the grid (both starting at 0), determine the id of row (also
+    starting at 0)
+    :param grid_id: (int) self-explained, the grid id (starting at 0)
+    :param grid_position: (int) the position of the element in this grid (starting at 0)
     :param grid_size: (int) self-explained, the size of one sudoku grid (which equals to the square root of the
     sudoku size, which is the number of elements per row/column/grid)
-    :return: (int) id of the row (starting at 1)
+    :return: (int) id of the row (starting at 0)
     """
-    row_in_grid = retrieve_row_id_from_global_position(grid_position, grid_size)
-    delta_row = grid_size * (retrieve_row_id_from_global_position(grid_id, grid_size) - 1)
+    row_in_grid = retrieve_row_id_from_position_and_size(grid_position, grid_size)
+    delta_row = grid_size * (retrieve_row_id_from_position_and_size(grid_id, grid_size))
     return delta_row + row_in_grid
 
 
 def retrieve_column_id_from_grid_id_and_position(grid_id, grid_position, grid_size):
     """
-    Given a position by it grid id and position in the grid (both starting at 1), determine the id of column (also
-    starting at 1)
-    :param grid_id: (int) self-explained, the grid id (starting at 1)
-    :param grid_position: (int) the position of the element in this grid (starting at 1)
+    Given a position by it grid id and position in the grid (both starting at 0), determine the id of column (also
+    starting at 0)
+    :param grid_id: (int) self-explained, the grid id (starting at 0)
+    :param grid_position: (int) the position of the element in this grid (starting at 0)
     :param grid_size: (int) self-explained, the size of one sudoku grid (which equals to the square root of the
     sudoku size, which is the number of elements per row/column/grid)
-    :return: (int) id of the column (starting at 1)
+    :return: (int) id of the column (starting at 0)
     """
-    col_in_grid = retrieve_column_id_from_global_position(grid_position, grid_size)
-    delta_col = grid_size * (retrieve_column_id_from_global_position(grid_id, grid_size) - 1)
+    col_in_grid = retrieve_column_id_from_position_and_size(grid_position, grid_size)
+    delta_col = grid_size * (retrieve_column_id_from_position_and_size(grid_id, grid_size))
     return delta_col + col_in_grid
 
 
 def fill_with_some_valid_values(array_to_fill, length):
+    """
+    Based on a given array containing '0' and non-zero values, return a new array filled with distinct and authorized
+    values randomly placed where there were '0'.
+    :param array_to_fill: (array) represents a grid, column or row and contains non-zero values if they are known or
+    zero otherwise
+    :param length: (int) size of the sudoku
+    :return: (array) new array filled with distinct and authorized values randomly placed where there were '0'.
+    """
     # Get fixed values
     fixed_values = [value for value in array_to_fill if value > 0]
     # Get fixed values and their index

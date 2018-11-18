@@ -3,14 +3,15 @@ Created on 10/11/2018
 @author: nidragedd
 """
 from math import sqrt
-from random import shuffle
-
 from sudoku.sudoku import Sudoku
 from utils import fileloader, positions
 
 
 def start(population_size, selection_rate, random_selection_rate, nb_children, max_nb_generations,
           mutation_rate, model_to_solve):
+    if selection_rate * nb_children != 1:
+        raise Exception("Either the selection rate or the number of children is not well adapted to fit the population")
+
     global sudoku_size
     global grid_size
     values_to_set = fileloader.load_file_as_values(model_to_solve)
@@ -22,7 +23,7 @@ def start(population_size, selection_rate, random_selection_rate, nb_children, m
     s.display()
 
     # Create the 1st generation
-    #new_population = create_first_generation(population_size, values_to_set)
+    new_population = create_first_generation(population_size, values_to_set)
     generate_random_individual(values_to_set)
 
 
@@ -48,25 +49,18 @@ def generate_random_individual(values_to_set):
     individual = Sudoku(sudoku_size)
     individual.init_with_values(values_to_set)
 
-    print("rows={}".format(individual.rows()))
-    print("cols={}".format(individual.columns()))
-    print("gris={}".format(individual.grids()))
-
     # We want to ensure that at least grids are 'correct' so we fill each one with available values to avoid duplicates
     for grid_id, grid_values in individual.grids().items():
         available_values = positions.fill_with_some_valid_values(grid_values, sudoku_size)
 
         # Get row and col from grid_id and position in grid and substitute the value
         for position, new_value in enumerate(available_values):
-            row_id = positions.retrieve_row_id_from_grid_id_and_position(grid_id, position + 1, grid_size)
-            col_id = positions.retrieve_column_id_from_grid_id_and_position(grid_id, position + 1, grid_size)
-            individual.columns()[col_id][row_id - 1] = new_value
-            individual.rows()[row_id][col_id - 1] = new_value
+            row_id = positions.retrieve_row_id_from_grid_id_and_position(grid_id, position, grid_size)
+            col_id = positions.retrieve_column_id_from_grid_id_and_position(grid_id, position, grid_size)
+            individual.columns()[col_id][row_id] = new_value
+            individual.rows()[row_id][col_id] = new_value
 
         # Substitute value with new one in grids arrays
         individual.grids()[grid_id] = available_values
-    print("rows={}".format(individual.rows()))
-    print("cols={}".format(individual.columns()))
-    print("gris={}".format(individual.grids()))
-
+    
     return individual

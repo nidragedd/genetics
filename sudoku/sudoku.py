@@ -41,18 +41,18 @@ class Sudoku(object):
                             "was expected".format(len(values), expected_len))
 
         # Init the dicts
-        for i in range(1, self._size + 1):
+        for i in range(self._size):
             self._rows[i] = []
             self._columns[i] = []
             self._grids[i] = []
 
         # In the above section we determine, according to the position in the given values, in which
         # column, row and grid the value belongs to
-        position = 1
+        position = 0
         for character in values:
             val = int(character)
-            row_id = positions.retrieve_row_id_from_global_position(position, self._size)
-            col_id = positions.retrieve_column_id_from_global_position(position, self._size)
+            row_id = positions.retrieve_row_id_from_position_and_size(position, self._size)
+            col_id = positions.retrieve_column_id_from_position_and_size(position, self._size)
             grid_id = positions.retrieve_grid_id_from_row_and_col(row_id, col_id, self._sqrt)
 
             position += 1
@@ -68,15 +68,15 @@ class Sudoku(object):
 
     def display(self):
         """
-        iterate over rows to print values and display the sudoku. We need to take care about new lines and subgrids
+        Iterate over rows to print values and display the sudoku. We need to take care about new lines and subgrids
         separations (horizontal and vertical)
         """
-        for i in range(1, self._size + 1):
-            if i > 1 and i % self._sqrt == 1:
+        for i in range(self._size):
+            if i > 1 and i % self._sqrt == 0:
                 print(commons.build_separator_line(self._sqrt))
 
             line = self._rows[i]
-            for j in range(len(line)):
+            for j in range(self._size):
                 if j > 0 and j % self._sqrt == 0:
                     print(' | {}'.format(line[j]), end='')
                 elif j == (self._size - 1):

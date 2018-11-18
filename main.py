@@ -4,7 +4,6 @@ Created on 10/11/2018
 """
 
 from sudoku import sudoku_genetics
-from utils import positions
 
 if __name__ == '__main__':
     population_size = 1000
