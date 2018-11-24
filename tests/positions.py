@@ -1,10 +1,10 @@
 import unittest
 
-from utils import positions
+from utils import positions, commons
 from math import sqrt
 
 
-class MyTestCase(unittest.TestCase):
+class PositionsTestCase(unittest.TestCase):
     sudoku_size = 9
     grid_size = sqrt(sudoku_size)
 
@@ -50,6 +50,13 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(8, positions.retrieve_column_id_from_grid_id_and_position(2, 5, 3))
         self.assertEqual(8, positions.retrieve_column_id_from_grid_id_and_position(5, 5, 3))
         self.assertEqual(3, positions.retrieve_column_id_from_grid_id_and_position(7, 6, 3))
+
+    def test_count_duplicates(self):
+        self.assertEqual(0, commons.count_duplicates([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]))
+        self.assertEqual(1, commons.count_duplicates([0, 1, 2, 1, 4, 5, 6, 7, 8, 9]))
+        self.assertEqual(2, commons.count_duplicates([0, 1, 2, 3, 4, 2, 6, 7, 2, 9]))
+        self.assertEqual(3, commons.count_duplicates([0, 1, 2, 9, 4, 9, 6, 9, 8, 9]))
+        self.assertEqual(6, commons.count_duplicates([0, 4, 0, 9, 4, 9, 4, 9, 9]))
 
 
 if __name__ == '__main__':
