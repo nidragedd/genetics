@@ -183,7 +183,12 @@ def init_from_grids(values_to_set, grids):
             col_id = positions.retrieve_column_id_from_grid_id_and_position(grid_id, position, s.grid_size())
             s.columns()[col_id][row_id] = value
             s.rows()[row_id][col_id] = value
-        s.grids()[grid_id] = grid_values
+            '''
+            Copy/paste value per value to avoid references issue (i.e 's.grids()[grid_id] = grid_values' will work but
+            it will generate further issues with mutation (as parent will also mutate and there are more than 1 child
+            per couple)
+            '''
+            s.grids()[grid_id][position] = value
     return s
 
 

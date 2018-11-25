@@ -10,7 +10,7 @@ from utils import fileloader, commons
 
 
 def start(population_size, selection_rate, random_selection_rate, nb_children, max_nb_generations,
-          mutation_rate, model_to_solve, presolving):
+          mutation_rate, model_to_solve, presolving, restart_after_n_generations_without_improvement):
     """
     Start the GA to solve the sudoku
     :param population_size: (int) the whole population size to generate for each generation
@@ -26,6 +26,8 @@ def start(population_size, selection_rate, random_selection_rate, nb_children, m
     sudoku problem to solve
     :param presolving: (boolean) (not used for the moment) if True, we can help by pre-solving the puzzle with easy
     values to find using a pencil mark approach
+    :param restart_after_n_generations_without_improvement: (int) if > 0, the program will automatically restart if
+    there is no improvement on fitness value for best element after this number of generations
     """
     if ((selection_rate + random_selection_rate) / 2) * nb_children != 1:
         raise Exception("Either the selection rate, random selection rate or the number of children is not "
@@ -38,43 +40,63 @@ def start(population_size, selection_rate, random_selection_rate, nb_children, m
     s.init_with_values(values_to_set)
     s.display()
 
-    # Create the 1st generation
-    new_population = create_first_generation(population_size, values_to_set)
-
-    nb_generations_done = 0
+    best_data = []
+    worst_data = []
     found = False
-    # Loop until max allowed generations is reached or a solution is found
-    while nb_generations_done < max_nb_generations and not found:
-        # Rank the solutions
-        ranked_population = rank_population(new_population)
-        best_solution = ranked_population[0][0]
-        best_score = ranked_population[0][1]
-        worst_score = ranked_population[population_size - 1][1]
+    nb_generations_done = 0
+    overall_nb_generations_done = 0
+    restart_counter = 0
 
-        if nb_generations_done % 50 == 0:
-            print("best so far is:")
-            best_solution.display()
+    while not found:
+        new_population = create_first_generation(population_size, values_to_set)
 
-        # Check if problem is solved and print best and worst results
-        if best_score > 0:
-            print("Problem not solved on generation {}. Best solution score is {} and worst is {}".
-                  format(nb_generations_done, best_score, worst_score))
-            # Not solved => select a new generation among this ranked population
-            # Retain only the percentage specified by selection rate
-            next_breeders = select_some_individuals_from_population(ranked_population, selection_rate,
-                                                                    random_selection_rate)
+        overall_nb_generations_done += nb_generations_done
+        nb_generations_done = 0
+        remember_the_best = 0
+        nb_generations_without_improvement = 0
 
-            children = create_children(next_breeders, nb_children)
-            new_population = mutate_population(children, mutation_rate)
+        # Loop until max allowed generations is reached or a solution is found
+        while nb_generations_done < max_nb_generations and not found:
+            # Rank the solutions
+            ranked_population = rank_population(new_population)
+            best_solution = ranked_population[0][0]
+            best_score = ranked_population[0][1]
+            worst_score = ranked_population[population_size - 1][1]
+            best_data.append(best_score)
+            worst_data.append(worst_score)
 
-            nb_generations_done += 1
-        else:
-            print("Problem solved after {} generations !!! Solution found is:".format(nb_generations_done))
-            best_solution.display()
-            found = True
+            # Manage best value and improvements among new generations over time
+            if remember_the_best == best_score:
+                nb_generations_without_improvement += 1
+            else:
+                remember_the_best = best_score
+            if 0 < restart_after_n_generations_without_improvement < nb_generations_without_improvement:
+                print("No improvement since {} generations, restarting the program".
+                      format(restart_after_n_generations_without_improvement))
+                restart_counter += 1
+                break
+
+            # Check if problem is solved and print best and worst results
+            if best_score > 0:
+                print("Problem not solved on generation {} (restarted {} times). Best solution score is {} and worst is {}".
+                      format(nb_generations_done, restart_counter, best_score, worst_score))
+                # Not solved => select a new generation among this ranked population
+                # Retain only the percentage specified by selection rate
+                next_breeders = select_some_individuals_from_population(ranked_population, selection_rate,
+                                                                        random_selection_rate)
+
+                children = create_children(next_breeders, nb_children)
+                new_population = mutate_population(children, mutation_rate)
+
+                nb_generations_done += 1
+            else:
+                print("Problem solved after {} generations !!! Solution found is:".format(nb_generations_done))
+                best_solution.display()
+                found = True
 
     if not found:
-        print("Problem not solved after max number generations allowed. Printing best and worst results below")
+        print("Problem not solved after {} generations. Printing best and worst results below".
+              format(overall_nb_generations_done))
         ranked_population = rank_population(new_population)
         best_solution = ranked_population[0][0]
         worst_solution = ranked_population[population_size - 1][0]
@@ -82,6 +104,8 @@ def start(population_size, selection_rate, random_selection_rate, nb_children, m
         best_solution.display()
         print("Worst is:")
         worst_solution.display()
+
+    #TODO: use matplotlib to display graph of best and worst over time
 
 
 def create_first_generation(population_size, values_to_set):
@@ -205,13 +229,9 @@ def mutate_population(population, mutation_rate):
     :return: (array) new population with some elements that went through mutation. It is the next generation to evaluate
     """
     population_with_mutation = []
-    nb_mutated = 0
     for individual in population:
         if random() < mutation_rate:
             random_grid_id = randint(0, individual.size() - 1)
-            population_with_mutation.append(sudoku.swap_2_values_in_grid(individual, random_grid_id))
-            nb_mutated += 1
-        else:
-            population_with_mutation.append(individual)
-    print("Number of people that went through mutation is {}".format(nb_mutated))
+            individual = sudoku.swap_2_values_in_grid(individual, random_grid_id)
+        population_with_mutation.append(individual)
     return population_with_mutation
