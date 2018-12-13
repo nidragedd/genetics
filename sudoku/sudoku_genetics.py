@@ -3,10 +3,11 @@ Created on 10/11/2018
 @author: nidragedd
 """
 from random import choice, shuffle, randint, random
+from time import time
 
-from sudoku import sudoku
+from sudoku import sudoku, pencilmark
 from sudoku.sudoku import Sudoku
-from utils import fileloader, commons
+from utils import fileloader, commons, graphics
 
 
 def start(population_size, selection_rate, random_selection_rate, nb_children, max_nb_generations,
@@ -24,8 +25,8 @@ def start(population_size, selection_rate, random_selection_rate, nb_children, m
     :param mutation_rate: (float) part of the population that will go through mutation (avoid eugenics)
     :param model_to_solve: (string) name of the .txt file which should be under 'samples' directory and contains the
     sudoku problem to solve
-    :param presolving: (boolean) (not used for the moment) if True, we can help by pre-solving the puzzle with easy
-    values to find using a pencil mark approach
+    :param presolving: (boolean) if True, we can help by pre-solving the puzzle with easy values to find using a pencil
+    mark approach
     :param restart_after_n_generations_without_improvement: (int) if > 0, the program will automatically restart if
     there is no improvement on fitness value for best element after this number of generations
     """
@@ -34,11 +35,27 @@ def start(population_size, selection_rate, random_selection_rate, nb_children, m
                         "well adapted to fit the population")
 
     values_to_set = fileloader.load_file_as_values(model_to_solve)
+    print("The solution we have to solve is: (nb values to find = {})".format(values_to_set.count('0')))
 
-    print("The solution we have to solve is:")
+    start_time = time()
     s = Sudoku(commons.get_sudoku_size(values_to_set))
     s.init_with_values(values_to_set)
     s.display()
+
+    if presolving:
+        print("Using pencil mark to fill in some predetermined values...")
+        values_to_set = pencilmark.use_pencil(values_to_set)
+        s = Sudoku(commons.get_sudoku_size(values_to_set))
+        s.init_with_values(values_to_set)
+        if values_to_set.count('0') == 0:
+            print("With just pencil mark, everything has been found ! Solution is:")
+            s.display()
+            print("It took {} to solve it".format(commons.get_human_readable_time(start_time, time())))
+            exit(0)
+        else:
+            print("After pencil mark, the solution we have to solve is: (nb values to find = {})"
+                  .format(values_to_set.count('0')))
+            s.display()
 
     best_data = []
     worst_data = []
@@ -93,6 +110,7 @@ def start(population_size, selection_rate, random_selection_rate, nb_children, m
                 print("Problem solved after {} generations !!! Solution found is:".format(nb_generations_done))
                 best_solution.display()
                 found = True
+                print("It took {} to solve it".format(commons.get_human_readable_time(start_time, time())))
 
     if not found:
         print("Problem not solved after {} generations. Printing best and worst results below".
@@ -105,7 +123,7 @@ def start(population_size, selection_rate, random_selection_rate, nb_children, m
         print("Worst is:")
         worst_solution.display()
 
-    #TODO: use matplotlib to display graph of best and worst over time
+    graphics.draw_best_worst_fitness_scores(best_data, worst_data)
 
 
 def create_first_generation(population_size, values_to_set):

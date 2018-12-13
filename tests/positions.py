@@ -58,6 +58,39 @@ class PositionsTestCase(unittest.TestCase):
         self.assertEqual(3, commons.count_duplicates([0, 1, 2, 9, 4, 9, 6, 9, 8, 9]))
         self.assertEqual(6, commons.count_duplicates([0, 4, 0, 9, 4, 9, 4, 9, 9]))
 
+    def test_get_rows(self):
+        self.assertEqual(range(0, 3), positions.retrieve_range_rows_from_grid_id(0, 3))
+        self.assertEqual(range(0, 3), positions.retrieve_range_rows_from_grid_id(1, 3))
+        self.assertEqual(range(0, 3), positions.retrieve_range_rows_from_grid_id(2, 3))
+        self.assertEqual(range(3, 6), positions.retrieve_range_rows_from_grid_id(3, 3))
+        self.assertEqual(range(3, 6), positions.retrieve_range_rows_from_grid_id(4, 3))
+        self.assertEqual(range(3, 6), positions.retrieve_range_rows_from_grid_id(5, 3))
+        self.assertEqual(range(6, 9), positions.retrieve_range_rows_from_grid_id(6, 3))
+        self.assertEqual(range(6, 9), positions.retrieve_range_rows_from_grid_id(7, 3))
+        self.assertEqual(range(6, 9), positions.retrieve_range_rows_from_grid_id(8, 3))
+        self.assertEqual(range(0, 4), positions.retrieve_range_rows_from_grid_id(0, 4))
+        self.assertEqual(range(0, 4), positions.retrieve_range_rows_from_grid_id(2, 4))
+        self.assertEqual(range(0, 4), positions.retrieve_range_rows_from_grid_id(3, 4))
+        self.assertEqual(range(4, 8), positions.retrieve_range_rows_from_grid_id(4, 4))
+        self.assertEqual(range(4, 8), positions.retrieve_range_rows_from_grid_id(7, 4))
+        self.assertEqual(range(8, 12), positions.retrieve_range_rows_from_grid_id(8, 4))
+
+    def test_get_cols(self):
+        self.assertEqual(range(0, 3), positions.retrieve_range_columns_from_grid_id(0, 3))
+        self.assertEqual(range(3, 6), positions.retrieve_range_columns_from_grid_id(1, 3))
+        self.assertEqual(range(6, 9), positions.retrieve_range_columns_from_grid_id(2, 3))
+        self.assertEqual(range(0, 3), positions.retrieve_range_columns_from_grid_id(3, 3))
+        self.assertEqual(range(3, 6), positions.retrieve_range_columns_from_grid_id(4, 3))
+        self.assertEqual(range(6, 9), positions.retrieve_range_columns_from_grid_id(5, 3))
+        self.assertEqual(range(0, 3), positions.retrieve_range_columns_from_grid_id(6, 3))
+        self.assertEqual(range(3, 6), positions.retrieve_range_columns_from_grid_id(7, 3))
+        self.assertEqual(range(6, 9), positions.retrieve_range_columns_from_grid_id(8, 3))
+        self.assertEqual(range(0, 4), positions.retrieve_range_columns_from_grid_id(0, 4))
+        self.assertEqual(range(8, 12), positions.retrieve_range_columns_from_grid_id(2, 4))
+        self.assertEqual(range(12, 16), positions.retrieve_range_columns_from_grid_id(3, 4))
+        self.assertEqual(range(0, 4), positions.retrieve_range_columns_from_grid_id(4, 4))
+        self.assertEqual(range(12, 16), positions.retrieve_range_columns_from_grid_id(7, 4))
+
 
 if __name__ == '__main__':
     unittest.main()

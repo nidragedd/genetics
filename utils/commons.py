@@ -2,7 +2,7 @@
 Created on 15/11/2018
 @author: nidragedd
 """
-from itertools import count
+import datetime
 from math import sqrt
 
 
@@ -45,3 +45,22 @@ def get_sudoku_size(values_to_set):
     """
     return int(sqrt(len(values_to_set)))
 
+
+def get_grid_size(values_to_set):
+    """
+    Compute the grid size of the sudoku. For example, for a 9x9 sudoku, the grid size is 3
+    :param values_to_set: (string) the values we have to set to init the sudoku
+    :return: (int) grid size
+    """
+    return int(sqrt(get_sudoku_size(values_to_set)))
+
+
+def get_human_readable_time(start_time, end_time):
+    """
+    Returns a string in the form [D day[s], ][H]H:MM:SS[.UUUUUU], where D is negative for negative t.
+    :param start_time: (float) the beginning of the task
+    :param end_time: (float) the end of the task
+    :return: (string) human readable string with hours, minutes and seconds
+    """
+    delay = datetime.timedelta(seconds=(end_time - start_time))
+    return str(delay)

@@ -34,7 +34,37 @@ def retrieve_grid_id_from_row_and_col(row_id, col_id, grid_size):
     sudoku size, which is the number of elements per row/column/grid)
     :return: (int) id of the grid (starting at 0)
     """
-    return col_id // grid_size + ((row_id // grid_size) * grid_size)
+    return int(col_id // grid_size + ((row_id // grid_size) * grid_size))
+
+
+def retrieve_range_rows_from_grid_id(grid_id, grid_size):
+    """
+    Retrieve range of rows (indexes) linked to the given grid id (starting at 0) for a given grid size
+    /!\ Be careful, this method returns the upper row index included because it is a 'range' in the Python sense and
+    the range (start, end) does not include the 'end' element while looping with 'for' or 'enumerate'. For example,
+    for a grid size=3 and grid_id=0 (the first one), the range returned will be (0, 3) so that the loop will take row 0,
+    1 and 2
+    :param grid_id: (int) the grid id (starting at 0) for which we want to get the range of rows
+    :param grid_size: (int) size of one grid (not the sudoku size, its square root)
+    :return: a range of rows indexes
+    """
+    start = int(grid_id / grid_size) * grid_size
+    return range(start, start + grid_size)
+
+
+def retrieve_range_columns_from_grid_id(grid_id, grid_size):
+    """
+    Retrieve range of columns (indexes) linked to the given grid id (starting at 0) for a given grid size.
+    /!\ Be careful, this method returns the upper column index included because it is a 'range' in the Python sense and
+    the range (start, end) does not include the 'end' element while looping with 'for' or 'enumerate'. For example,
+    for a grid size=3 and grid_id=0 (the first one), the range returned will be (0, 3) so that the loop will take column
+    0, 1 and 2
+    :param grid_id: (int) the grid id (starting at 0) for which we want to get the range of columns
+    :param grid_size: (int) size of one grid (not the sudoku size, its square root)
+    :return: a range of columns indexes
+    """
+    start = int(grid_id % grid_size) * grid_size
+    return range(start, start + grid_size)
 
 
 def retrieve_row_id_from_grid_id_and_position(grid_id, grid_position, grid_size):
