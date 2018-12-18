@@ -6,7 +6,7 @@ Created on 10/11/2018
 from sudoku import sudoku_genetics
 
 if __name__ == '__main__':
-    population_size = 10000
+    population_size = 5000
     selection_rate = 0.25
     random_selection_rate = 0.25
     nb_children = 4
@@ -14,7 +14,7 @@ if __name__ == '__main__':
 
     max_nb_generations = 500
     restart_after_n_generations_without_improvement = 300
-    model_to_solve = '3x3-easy-02'
+    model_to_solve = '3x3-easy-03'
 
     presolving = False
 

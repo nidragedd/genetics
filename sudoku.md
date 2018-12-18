@@ -83,5 +83,36 @@ mutation approach we can guarantee that grid remains coherent and without duplic
 ### Possible improvements
 * When generating children, keep parents if their fitness is better
 
-### TODOs
-* Implement matplotlib to display graphs about best and worst score among generations over time
+### Results
+* **Parameters**  
+    * population_size = 10000  
+    * selection_rate = 0.25  
+    * random_selection_rate = 0.25  
+    * nb_children = 4  
+    * mutation_rate = 0.25  
+    * max_nb_generations = 500  
+    * restart_after_n_generations_without_improvement = 300  
+
+* **Sample 3x3-easy02** (nb values to find = 49)  
+Without using the pencil mark (***presolving = False***, otherwise everything will be found within less than 1 second), this
+GA was most of the time able to solve the puzzle with few generations (more or less 20).
+See the picture below which shows the evolution of best and worst score among generations, the best one is almost always
+improving and fastly (too ?) converges toward the solution.  
+![3x3 grid easy02 population 10000](results/3x3-easy02-10000.png)  
+
+Problem solved after 23 generations (it took 0:03:17.72 to solve it (whereas 0:00:00.04 to solve it with pencil mark)
+
+Changing the population size has a big impact (yeah, of course....) ! I took 5000 as a population size and this is what
+I got:  
+![3x3 grid easy02 population 5000](results/3x3-easy02-5000.png)  
+
+The problem was not yet solved after 319 generations and, as you can see on the graph, without improvement (stuck in local
+minima) so it restarted as per the configuration. Then it has been able to solve it after 24 generations. Note that here
+it is total luck as the restart does not keep the best elements from the previous runs (could be one of the improvements).
+It took 0:24:05.68 to solve it.
+
+* **Sample 3x3-easy03** (nb values to find = 43)  
+With same parameters as above, the problem has been solved after 15 generations. It took 0:01:57.23 to solve it.  
+I changed both *selection_rate* and *mutation_rate* and put both to 0.2 (instead of 0.25) and accordingly adapted the
+*nb_children* to 5.
+Few impact, the problem has also been solved after 17 generations and it took 0:02:20.55 to solve it.
