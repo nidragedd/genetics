@@ -60,8 +60,6 @@ problem to solve
 * ***restart_after_n_generations_without_improvement***: (int) set it to a value greater than 0 to use it. Then, the
 program will automatically restart if there is no improvement on _fitness value for best element after this number of
 generations
-
-A new parameter is planned to be used but not yet developed:
 * ***presolving***: (boolean) if True, we can help by pre-solving the puzzle with easy values to find using a pencil
 mark approach. With easy grids, after the pencil mark, everything will be solved and GA does not have to run.
 
@@ -81,7 +79,7 @@ mutation approach we can guarantee that grid remains coherent and without duplic
 'mutated' child is different than the one from the same element before its mutation. It can have improved it or not. 
 
 ### Possible improvements
-* When generating children, keep parents if their _fitness is better
+* When generating children, keep parents if their _fitness_ is better
 
 ### Results
 * **Parameters**  
