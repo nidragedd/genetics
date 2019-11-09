@@ -7,7 +7,14 @@ import re
 
 
 def load_file_as_values(file_name):
-    file_to_load = os.path.join(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")), 'samples',
+    """
+    Load values from a file that has the given file_name and should be placed under samples directory.
+    The loading functions removes new lines and whitespaces so that all values are gathered into a simple string which
+    is a suite of numbers.
+    :param file_name: (string) name of the file containing values
+    :return: (string) all values for the sudoku (values to guess are '0's)
+    """
+    file_to_load = os.path.join(os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir)), 'samples',
                                 file_name + '.txt')
     content = ''
     if os.path.exists(file_to_load):

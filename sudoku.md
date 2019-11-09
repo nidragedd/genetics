@@ -45,7 +45,7 @@ in plain text files containing the values where:
 
 ### Parameters
 Here are the few parameters that we can set:
-* ***population_size***: (int) the whole population size to generate for each generation. Do not start with a too low value.
+* ***population_size***: (int) the whole population size to generate for each generation. Do not run with a too low value.
 * ***selection_rate***: (float) elitism parameter: rate of the best elements to keep from one generation to be part of
 the next breeders
 * ***random_selection_rate***: (float) part of the population which is randomly selected to be part of the next breeders
@@ -58,17 +58,17 @@ might get stuck with local minima.
 * ***model_to_solve***: (string) name of the .txt file which should be under 'samples' directory and contains the sudoku
 problem to solve
 * ***restart_after_n_generations_without_improvement***: (int) set it to a value greater than 0 to use it. Then, the
-program will automatically restart if there is no improvement on fitness value for best element after this number of
+program will automatically restart if there is no improvement on _fitness value for best element after this number of
 generations
 
 A new parameter is planned to be used but not yet developed:
 * ***presolving***: (boolean) if True, we can help by pre-solving the puzzle with easy values to find using a pencil
-mark approach. With easy grids, after the pencil mark, everything will be solved and GA does not have to start.
+mark approach. With easy grids, after the pencil mark, everything will be solved and GA does not have to run.
 
 ### Operations
 * ***create first population***: randomly generate some 'solutions' to evaluate. The approach is to generate a potential
 solution with no duplicates in grids. But of course, there can be (and for sure there are) duplicates in rows and columns.
-* ***ranking with fitness function***: the fitness function counts how many duplicates there are in the potential
+* ***ranking with _fitness function***: the _fitness function counts how many duplicates there are in the potential
 solution: how many among rows and among columns (there are no duplicates in grids because we have generated them without
 duplicates, and we pay attention to keep this always true)
 * ***child generation***: 2 potential solutions are chosen randomly and generate n children (n is a parameter to set,
@@ -77,11 +77,11 @@ the crossover point and from mother after the point.
 * ***mutation***: a certain percentage of the population will mutate (set the value as a parameter, see above). In our
 case, it only means that we will randomly pick one grid and then within this grid we will randomly swap 2 values (pay
 attention to the fact that we cannot swap a 'fixed value', i.e a value that is known and provided). With such a
-mutation approach we can guarantee that grid remains coherent and without duplicates but fitness evaluation of a
+mutation approach we can guarantee that grid remains coherent and without duplicates but _fitness evaluation of a
 'mutated' child is different than the one from the same element before its mutation. It can have improved it or not. 
 
 ### Possible improvements
-* When generating children, keep parents if their fitness is better
+* When generating children, keep parents if their _fitness is better
 
 ### Results
 * **Parameters**  

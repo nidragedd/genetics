@@ -5,8 +5,8 @@ Created on 23/11/2018
 from math import sqrt
 from random import randint
 
-from sudoku import sudoku, sudoku_genetics
-from sudoku.sudoku import Sudoku
+from objects import sudoku, sudoku_genetics
+from objects.sudoku import Sudoku
 from utils import fileloader
 
 if __name__ == '__main__':
@@ -15,11 +15,11 @@ if __name__ == '__main__':
     sudoku_size = int(sqrt(len(values_to_set)))
     grid_size = int(sqrt(sudoku_size))
 
-    print("TEST N°1: displaying the sudoku with '0' values:")
+    print("TEST N°1: displaying the objects with '0' values:")
     s = Sudoku(sudoku_size)
     s.init_with_values(values_to_set)
     s.display()
-    print("Fitness evaluation for this sudoku is {}".format(sudoku_genetics.fitness(s)))
+    print("Fitness evaluation for this objects is {}".format(sudoku_genetics.fitness(s)))
 
     print("\nTEST N°2: generating 2 random individuals")
     father = sudoku.build_random(values_to_set)
