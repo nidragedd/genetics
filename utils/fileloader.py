@@ -19,7 +19,6 @@ def load_file_as_values(file_name):
     if os.path.exists(file_to_load):
         with open(file_to_load, 'rt') as f:
             content = f.read()
-        #return re.sub('(\n|\||-|\s)', '', content)
         return re.sub('(\||-)', '', content).replace('\n', ' ').replace('  ', ' ').split(' ')
     else:
         raise Exception("The file '{}' does not exist in 'samples' directory, please check your folder".
