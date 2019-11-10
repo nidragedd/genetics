@@ -27,7 +27,10 @@ def build_separator_line(grid_size):
     objects size, which is the number of elements per row/column/grid)
     :return: (string) a string to display after each group of grids to horizontally separate them
     """
-    separator_line = '{}-|'.format('--' * grid_size) * grid_size
+    seps = '--' * grid_size
+    if grid_size > 3:
+        seps += '----'
+    separator_line = '{}-|'.format(seps) * grid_size
     return separator_line[:len(separator_line) - 1]
 
 

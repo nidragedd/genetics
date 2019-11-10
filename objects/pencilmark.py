@@ -91,13 +91,13 @@ class PencilMark(object):
         value). In this case we can add this new found value, otherwise we keep it as unknown with a '0' digit character
         :param pencil_mark: (dict) a pencil mark object. Key is the row/column position and value is a boolean array
         where True means that the value is fixed
-        :return: (string) of new values determined with such a pencil mark
+        :return: (array) new values determined with such a pencil mark
         """
-        new_values = ''
+        new_values = []
         for key, bool_arr in pencil_mark.items():
             indices = [i for i, x in enumerate(bool_arr) if x]
             if len(indices) == 1:
-                new_values += str(int(indices[0]) + 1)
+                new_values.append(int(indices[0]) + 1)
             else:
-                new_values += '0'
+                new_values.append(0)
         return new_values

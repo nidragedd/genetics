@@ -135,7 +135,8 @@ class SudokuGA(object):
                             "well adapted to fit the population")
 
         values_to_set = fileloader.load_file_as_values(self._model_to_solve)
-        print("The solution we have to solve is: (nb values to find = {})".format(values_to_set.count('0')))
+        zeros_to_count = '0' if len(values_to_set) < 82 else '00'
+        print("The solution we have to solve is: (nb values to find = {})".format(values_to_set.count(zeros_to_count)))
 
         self._start_time = time()
         s = Sudoku(s_utils.get_sudoku_size(values_to_set))
@@ -159,7 +160,7 @@ class SudokuGA(object):
             s = Sudoku(s_utils.get_sudoku_size(values_to_set))
             s.init_with_values(values_to_set)
 
-            remaining_vals_to_find = values_to_set.count('0')
+            remaining_vals_to_find = values_to_set.count(0)
             if remaining_vals_to_find == 0:
                 print("With just pencil mark, everything has been found ! Solution is:")
             else:

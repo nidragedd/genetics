@@ -83,12 +83,15 @@ class Sudoku(object):
 
             line = self._rows[i]
             for j in range(self._size):
+                val = line[j]
+                if self.size() > 9:
+                    val = str(val).zfill(2)
                 if j > 0 and j % self._grid_size == 0:
-                    print(' | {}'.format(line[j]), end='')
+                    print(' | {}'.format(val), end='')
                 elif j == (self._size - 1):
-                    print(' {}'.format(line[j]))
+                    print(' {}'.format(val))
                 else:
-                    print(' {}'.format(line[j]), end='')
+                    print(' {}'.format(val), end='')
         print("")
 
     def is_fixed(self, row_id, col_id):
