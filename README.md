@@ -1,9 +1,9 @@
 # Disclaimer
 * This project is only for personal challenge and educational purpose, no other pretention than those ones.
-* I could have used some libs such as numpy or [pyevolve](http://pyevolve.sourceforge.net/) but the goal was more
+* I could have used some libs such as [pyevolve](http://pyevolve.sourceforge.net/) but the goal was more
 to understand how it works, what I am doing and why I am doing it.
 * Objective was also to improve my personal skills in Python but perhaps sometimes my choices/approaches 
-are not so 'pythonic', sorry about that
+are not so 'pythonic', sorry about that.
 
 # Overwiew
 Goal of this project is to solve problems by using genetic algorithms.  

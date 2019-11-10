@@ -102,7 +102,7 @@ class SudokuGA(object):
                     next_breeders = ga_utils.pick_from_population(ranked_population, self._selection_rate,
                                                                   self._random_selection_rate)
 
-                    children = ga_utils.create_children(next_breeders, self._nb_children)
+                    children = ga_utils.create_children_v2(next_breeders, self._nb_children)
                     new_population = ga_utils.mutate_population(children, self._mutation_rate)
 
                     nb_generations_done += 1

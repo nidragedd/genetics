@@ -69,6 +69,7 @@ def pick_from_population(ranked_population, selection_rate, random_selection_rat
 
     nb_best_to_select = int(len(ranked_population) * selection_rate)
     nb_random_to_select = int(len(ranked_population) * random_selection_rate)
+    rnd_len = len(ranked_population)
 
     # Keep n best elements in the population + randomly n other elements (note: might be the same)
     for i in range(nb_best_to_select):
@@ -97,6 +98,26 @@ def create_children(next_breeders, nb_children):
             # We take father at the beginning of the list, mother at the end (remember that elements have been shuffled)
             next_population.append(create_one_child(next_breeders[i], next_breeders[len(next_breeders) - 1 - i],
                                                     next_breeders[i].initial_values()))
+    return next_population
+
+
+def create_children_v2(next_breeders, nb_children):
+    """
+    Create the children from the given breeders generation
+    :param next_breeders: (array) the population that will be used to create the next one
+    :param nb_children: (int) number of children to create per couple father/mother, it is a parameter that can be
+    changed to act on the program
+    :return: (array) children generated with this population. They represent the next generation to evaluate
+    (after mutation)
+    """
+    next_population = []
+    # Divided by 2: one 'father' and one 'mother'
+    for i in range(int(len(next_breeders) / 2)):
+        for j in range(nb_children):
+            # Randomly pick 1 father and 1 mother
+            father = random.choice(next_breeders)
+            mother = random.choice(next_breeders)
+            next_population.append(create_one_child(father, mother, father.initial_values()))
     return next_population
 
 
