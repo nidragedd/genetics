@@ -5,7 +5,7 @@ Created on 09/11/2019
 import numpy as np
 import random
 
-from sudoku import s_utils
+from objects.sudoku import Sudoku
 
 
 def create_generation(population_size, values_to_set):
@@ -17,7 +17,7 @@ def create_generation(population_size, values_to_set):
     """
     population = []
     for i in range(population_size):
-        population.append(s_utils.build_random(values_to_set))
+        population.append(Sudoku(values_to_set).fill_random())
     return population
 
 
@@ -26,39 +26,20 @@ def rank_population(population):
     Evaluate each individual of the population and give a ranking note whether it solves a lot or a little the problem
     (based on fitness method)
     :param population: (array) array of individuals to rank
-    :return: (list) a sorted list of tuples where first element is the individual and second is the
-    score. The list is sorted (asc) by the score, meaning that the best element is placed at the beginning and the worst
-    at the end
+    :return: (list) a sorted (asc) population. Individuals are sorted based on their fitness score
     """
     individuals_and_score = {}
     for individual in population:
-        individuals_and_score[individual] = fitness(individual)
-    return [(k, individuals_and_score[k]) for k in sorted(individuals_and_score, key=individuals_and_score.get)]
-
-
-def fitness(candidate):
-    """
-    The most important function of the program. Here we give a note to the candidate according to the values
-    Basically it is: how many figures are at the right place among the number of figures to find
-    'Right place' = the number of duplicate symbols in rows or columns. Fewer duplicates presumably means a better
-    solution
-    :param candidate: (object) the candidate to evaluate/score
-    :return: (int) a score for this candidate, lower it is, better is the candidate
-    """
-    duplicates_counter = 0
-    for i in range(candidate.size()):
-        duplicates_counter += s_utils.count_duplicates(candidate.rows()[i]) + \
-                              s_utils.count_duplicates(candidate.columns()[i])
-    return duplicates_counter
+        individuals_and_score[individual] = individual.fitness()
+    return sorted(individuals_and_score, key=individuals_and_score.get)
 
 
 def pick_from_population(ranked_population, selection_rate, random_selection_rate):
     """
     Select in a sorted population the best elements according to the given selection rate + add randomly some other
     elements
-    :param ranked_population: (list) a sorted list of tuples where first element is the individual and second is the
-    score. The list is sorted (asc) by the score, meaning that the best element is placed at the beginning and the worst
-    at the end
+    :param ranked_population: (list) list of individuals sorted (asc) by the score, meaning that the best element is
+    placed at the beginning and the worst at the end
     :param selection_rate: (float) given selection rate, it is a parameter that can be changed to act on the program
     :param random_selection_rate: (float) a random selection rate, it is a parameter that can also be changed to act
     on the program
@@ -69,13 +50,12 @@ def pick_from_population(ranked_population, selection_rate, random_selection_rat
 
     nb_best_to_select = int(len(ranked_population) * selection_rate)
     nb_random_to_select = int(len(ranked_population) * random_selection_rate)
-    rnd_len = len(ranked_population)
 
     # Keep n best elements in the population + randomly n other elements (note: might be the same)
     for i in range(nb_best_to_select):
-        next_breeders.append(ranked_population[i][0])
+        next_breeders.append(ranked_population[i])
     for i in range(nb_random_to_select):
-        next_breeders.append(random.choice(ranked_population)[0])
+        next_breeders.append(random.choice(ranked_population))
 
     # Shuffle everything to avoid having only the best (copyright Tina Turner) at the beginning
     np.random.shuffle(next_breeders)
@@ -97,11 +77,11 @@ def create_children(next_breeders, nb_children):
         for j in range(nb_children):
             # We take father at the beginning of the list, mother at the end (remember that elements have been shuffled)
             next_population.append(create_one_child(next_breeders[i], next_breeders[len(next_breeders) - 1 - i],
-                                                    next_breeders[i].initial_values()))
+                                                    next_breeders[i].get_initial_values()))
     return next_population
 
 
-def create_children_v2(next_breeders, nb_children):
+def create_children_random_parents(next_breeders, nb_children):
     """
     Create the children from the given breeders generation
     :param next_breeders: (array) the population that will be used to create the next one
@@ -117,7 +97,7 @@ def create_children_v2(next_breeders, nb_children):
             # Randomly pick 1 father and 1 mother
             father = random.choice(next_breeders)
             mother = random.choice(next_breeders)
-            next_population.append(create_one_child(father, mother, father.initial_values()))
+            next_population.append(create_one_child(father, mother, father.get_initial_values()))
     return next_population
 
 
@@ -131,7 +111,7 @@ def create_one_child(father, mother, values_to_set):
     :return: (object) a child which is the combination of both parents
     """
     # Avoid having only the whole father or the whole mother
-    sudoku_size = s_utils.get_sudoku_size(values_to_set)
+    sudoku_size = father.size()
     crossover_point = np.random.randint(1, sudoku_size - 1)
 
     child_grids = []
@@ -140,7 +120,7 @@ def create_one_child(father, mother, values_to_set):
             child_grids.append(father.grids()[i])
         else:
             child_grids.append(mother.grids()[i])
-    return s_utils.init_from_grids(values_to_set, child_grids)
+    return Sudoku(values_to_set).fill_with_grids(child_grids)
 
 
 def mutate_population(population, mutation_rate):
@@ -153,7 +133,6 @@ def mutate_population(population, mutation_rate):
     population_with_mutation = []
     for individual in population:
         if np.random.random() < mutation_rate:
-            random_grid_id = np.random.randint(0, individual.size() - 1)
-            individual = s_utils.swap_2_values_in_grid(individual, random_grid_id)
+            individual = individual.swap_2_values()
         population_with_mutation.append(individual)
     return population_with_mutation

@@ -12,7 +12,7 @@ def load_file_as_values(file_name):
     The loading functions removes new lines and whitespaces so that all values are gathered into a simple string which
     is a suite of numbers.
     :param file_name: (string) name of the file containing values
-    :return: (string) all values for the sudoku (values to guess are '0's)
+    :return: (array) list of string values for the sudoku (values to guess are '0's)
     """
     file_to_load = os.path.join(os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir)), 'samples',
                                 file_name + '.txt')

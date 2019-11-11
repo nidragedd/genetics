@@ -9,29 +9,29 @@ class PencilMark(object):
     """
     A pencil mark class
     """
-    _values = None
+    _sudoku = None
 
-    def __init__(self, values_to_set):
+    def __init__(self, sudoku):
         """
         Constructor
         """
-        self._values = values_to_set
+        self._sudoku = sudoku
 
     def run(self):
         """
         Start the pencil mark algorithm by giving it the initial values (unknown values are represented by a '0' digit).
         The strategy is to loop until we cannot deduce new values to place in the given objects. For very basic puzzles,
         this algorithm might fill it up.
-        :return: (string)  new values to init the puzzle
+
+        The puzzle this pencil mark is running on has its values changed if new one are found
         """
         found_new = True
 
         while found_new:
             pencil_mark = self._run_one_iteration()
             new_values = self.generate_values_from_pencil(pencil_mark)
-            found_new = new_values != self._values
-            self._values = new_values
-        return self._values
+            found_new = new_values != self._sudoku.get_initial_values()
+            self._sudoku.set_initial_values(new_values)
 
     def _run_one_iteration(self):
         """
@@ -41,8 +41,8 @@ class PencilMark(object):
         :return: (dict) a pencil mark object. Key is the row/column position and value is a boolean array where True
         means that the value is fixed
         """
-        sudoku_size = s_utils.get_sudoku_size(self._values)
-        grid_size = s_utils.get_grid_size(self._values)
+        sudoku_size = self._sudoku.size()
+        grid_size = self._sudoku.grid_size()
 
         # 1- Init a pencil mark with all set to True
         pencil_mark = {}
@@ -51,7 +51,7 @@ class PencilMark(object):
                 pencil_mark[s_utils.build_fixed_val_key(i, j)] = [True] * sudoku_size
 
         position = 0
-        for character in self._values:
+        for character in self._sudoku.get_initial_values():
             digit = int(character)
             if digit != 0:
                 r = positions.retrieve_row_id_from_position_and_size(position, sudoku_size)

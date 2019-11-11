@@ -6,8 +6,8 @@ from time import time
 
 from objects.pencilmark import PencilMark
 from objects.sudoku import Sudoku
-from sudoku import s_utils, ga_utils
-from utils import fileloader, graphics
+from sudoku import ga_utils
+from utils import fileloader, graphics, tools
 
 
 class SudokuGA(object):
@@ -55,7 +55,7 @@ class SudokuGA(object):
         """
         Start the GA to solve the objects
         """
-        values_to_set = self._load()
+        values_to_set = self._load().get_initial_values()
 
         best_data = []
         worst_data = []
@@ -76,9 +76,9 @@ class SudokuGA(object):
             while nb_generations_done < self._max_nb_generations and not found:
                 # Rank the solutions
                 ranked_population = ga_utils.rank_population(new_population)
-                best_solution = ranked_population[0][0]
-                best_score = ranked_population[0][1]
-                worst_score = ranked_population[self._population_size - 1][1]
+                best_solution = ranked_population[0]
+                best_score = best_solution.fitness()
+                worst_score = ranked_population[-1].fitness()
                 best_data.append(best_score)
                 worst_data.append(worst_score)
 
@@ -102,7 +102,7 @@ class SudokuGA(object):
                     next_breeders = ga_utils.pick_from_population(ranked_population, self._selection_rate,
                                                                   self._random_selection_rate)
 
-                    children = ga_utils.create_children_v2(next_breeders, self._nb_children)
+                    children = ga_utils.create_children(next_breeders, self._nb_children)
                     new_population = ga_utils.mutate_population(children, self._mutation_rate)
 
                     nb_generations_done += 1
@@ -110,14 +110,14 @@ class SudokuGA(object):
                     print("Problem solved after {} generations !!! Solution found is:".format(nb_generations_done))
                     best_solution.display()
                     found = True
-                    print("It took {} to solve it".format(s_utils.get_human_readable_time(self._start_time, time())))
+                    print("It took {} to solve it".format(tools.get_human_readable_time(self._start_time, time())))
 
         if not found:
             print("Problem not solved after {} generations. Printing best and worst results below".
                   format(overall_nb_generations_done))
             ranked_population = ga_utils.rank_population(new_population)
-            best_solution = ranked_population[0][0]
-            worst_solution = ranked_population[self._population_size - 1][0]
+            best_solution = ranked_population[0]
+            worst_solution = ranked_population[-1]
             print("Best is:")
             best_solution.display()
             print("Worst is:")
@@ -128,7 +128,7 @@ class SudokuGA(object):
     def _load(self):
         """
         Load the file, performs some sanity checks and eventually use pencil mark to go faster
-        :return: (string) values loaded from file or found with pencil mark
+        :return: (object) the sudoku puzzle to use
         """
         if ((self._selection_rate + self._random_selection_rate) / 2) * self._nb_children != 1:
             raise Exception("Either the selection rate, random selection rate or the number of children is not "
@@ -139,36 +139,30 @@ class SudokuGA(object):
         print("The solution we have to solve is: (nb values to find = {})".format(values_to_set.count(zeros_to_count)))
 
         self._start_time = time()
-        s = Sudoku(s_utils.get_sudoku_size(values_to_set))
-        s.init_with_values(values_to_set)
+        s = Sudoku(values_to_set)
         s.display()
 
-        values_to_set = self._run_pencil_mark(values_to_set)
+        self._run_pencil_mark(s)
+        return s
 
-        return values_to_set
-
-    def _run_pencil_mark(self, values_to_set):
+    def _run_pencil_mark(self, sudoku):
         """
         Run pencil mark is the parameter has been set to True
-        :param values_to_set: (string) values loaded from file
-        :return: (string) values found with pencil mark
+        :param sudoku: (object) the sudoku to fill
         """
         if self._presolving:
             print("Using pencil mark to fill in some predetermined values...")
-            p = PencilMark(values_to_set)
-            values_to_set = p.run()
-            s = Sudoku(s_utils.get_sudoku_size(values_to_set))
-            s.init_with_values(values_to_set)
+            p = PencilMark(sudoku)
+            p.run()
 
-            remaining_vals_to_find = values_to_set.count(0)
+            remaining_vals_to_find = sudoku.get_initial_values().count(0)
             if remaining_vals_to_find == 0:
                 print("With just pencil mark, everything has been found ! Solution is:")
             else:
                 print("After pencil mark, the solution we have to solve is: (nb values to find = {})".
                       format(remaining_vals_to_find))
 
-            s.display()
+            sudoku.display()
             if remaining_vals_to_find == 0:
-                print("It took {} to solve it".format(s_utils.get_human_readable_time(self._start_time, time())))
+                print("It took {} to solve it".format(tools.get_human_readable_time(self._start_time, time())))
                 exit(0)
-        return values_to_set

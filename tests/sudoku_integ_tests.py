@@ -3,8 +3,7 @@ Created on 23/11/2018
 @author: nidragedd
 """
 from math import sqrt
-from random import randint
-from sudoku import ga_utils, s_utils
+from sudoku import ga_utils
 from objects.sudoku import Sudoku
 from utils import fileloader
 
@@ -15,41 +14,27 @@ if __name__ == '__main__':
     grid_size = int(sqrt(sudoku_size))
 
     print("TEST N°1: displaying the objects with '0' values:")
-    s = Sudoku(sudoku_size)
-    s.init_with_values(values_to_set)
+    s = Sudoku(values_to_set)
     s.display()
-    print("Fitness evaluation for this objects is {}".format(ga_utils.fitness(s)))
+    print("Fitness evaluation for this objects is {}".format(s.fitness()))
 
     print("\nTEST N°2: generating 2 random individuals")
-    father = s_utils.build_random(values_to_set)
+    father = Sudoku(values_to_set).fill_random()
     father.display()
-    mother = s_utils.build_random(values_to_set)
+    mother = Sudoku(values_to_set).fill_random()
     mother.display()
-    print("Fitness evaluation for father is {}".format(ga_utils.fitness(father)))
-    print("Fitness evaluation for mother is {}".format(ga_utils.fitness(mother)))
+    print("Fitness evaluation for father is {}".format(father.fitness()))
+    print("Fitness evaluation for mother is {}".format(mother.fitness()))
 
     print("\nTEST N°3: generating child from father and mother")
     child = ga_utils.create_one_child(father, mother, values_to_set)
     child.display()
-    print("Fitness evaluation for child is {}".format(ga_utils.fitness(child)))
+    print("Fitness evaluation for child is {}".format(child.fitness()))
 
-    print("\nTEST N°4: randomly choose 2 values to swap in grid n° 3")
-    print("Note: in grid 3, fixed positions are 0, 5 and 6")
-    grid_id = 3
-    rand_pos_1, row_id_1, col_id_1 = s_utils.get_random_not_fixed(child, grid_id, -1)
-    rand_pos_2, row_id_2, col_id_2 = s_utils.get_random_not_fixed(child, grid_id, rand_pos_1)
-    val_1 = child.grids()[grid_id][rand_pos_1]
-    val_2 = child.grids()[grid_id][rand_pos_2]
-    print("Values to swap are pos={} [row {}/col {}] (value={}) and pos={} [row {}/col {}] (value={})".
-          format(rand_pos_1, row_id_1, col_id_1, val_1, rand_pos_2, row_id_2, col_id_2, val_2))
-
-    print("\nTEST N°5: mutate the child")
-    print("Note: values that will swap are not the same one as in TEST N°4")
-    random_grid_id = randint(0, child.size() - 1)
-    print("Chosen grid id for mutation is {}".format(random_grid_id))
-    swapped_child = s_utils.swap_2_values_in_grid(child, random_grid_id)
+    print("\nTEST N°4: mutate the child")
+    swapped_child = child.swap_2_values()
     swapped_child.display()
-    print("Fitness evaluation for mutated child is {}".format(ga_utils.fitness(swapped_child)))
+    print("Fitness evaluation for mutated child is {}".format(swapped_child.fitness()))
     print("DEBUG: check that swapped child is not the same as original child")
     print("Child rows: {}".format(child.rows()))
     print("Child columns: {}".format(child.columns()))

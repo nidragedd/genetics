@@ -1,7 +1,9 @@
 import unittest
 
-from sudoku import positions, s_utils
+from sudoku import positions
 from math import sqrt
+
+from utils import tools
 
 
 class PositionsTestCase(unittest.TestCase):
@@ -52,11 +54,11 @@ class PositionsTestCase(unittest.TestCase):
         self.assertEqual(3, positions.retrieve_column_id_from_grid_id_and_position(7, 6, 3))
 
     def test_count_duplicates(self):
-        self.assertEqual(0, s_utils.count_duplicates([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]))
-        self.assertEqual(1, s_utils.count_duplicates([0, 1, 2, 1, 4, 5, 6, 7, 8, 9]))
-        self.assertEqual(2, s_utils.count_duplicates([0, 1, 2, 3, 4, 2, 6, 7, 2, 9]))
-        self.assertEqual(3, s_utils.count_duplicates([0, 1, 2, 9, 4, 9, 6, 9, 8, 9]))
-        self.assertEqual(6, s_utils.count_duplicates([0, 4, 0, 9, 4, 9, 4, 9, 9]))
+        self.assertEqual(0, tools.count_duplicates([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]))
+        self.assertEqual(1, tools.count_duplicates([0, 1, 2, 1, 4, 5, 6, 7, 8, 9]))
+        self.assertEqual(2, tools.count_duplicates([0, 1, 2, 3, 4, 2, 6, 7, 2, 9]))
+        self.assertEqual(3, tools.count_duplicates([0, 1, 2, 9, 4, 9, 6, 9, 8, 9]))
+        self.assertEqual(6, tools.count_duplicates([0, 4, 0, 9, 4, 9, 4, 9, 9]))
 
     def test_get_rows(self):
         self.assertEqual(range(0, 3), positions.retrieve_range_rows_from_grid_id(0, 3))
