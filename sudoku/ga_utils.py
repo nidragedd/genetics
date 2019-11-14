@@ -91,13 +91,12 @@ def create_children_random_parents(next_breeders, nb_children):
     (after mutation)
     """
     next_population = []
-    # Divided by 2: one 'father' and one 'mother'
-    for i in range(int(len(next_breeders) / 2)):
-        for j in range(nb_children):
-            # Randomly pick 1 father and 1 mother
-            father = random.choice(next_breeders)
-            mother = random.choice(next_breeders)
-            next_population.append(create_one_child(father, mother, father.get_initial_values()))
+    # Randomly pick 1 father and 1 mother until new population is filled
+    range_val = int(len(next_breeders)/2) * nb_children
+    for _ in range(range_val):
+        father = random.choice(next_breeders)
+        mother = random.choice(next_breeders)
+        next_population.append(create_one_child_random_elements(father, mother, father.get_initial_values()))
     return next_population
 
 
@@ -120,6 +119,28 @@ def create_one_child(father, mother, values_to_set):
             child_grids.append(father.grids()[i])
         else:
             child_grids.append(mother.grids()[i])
+    return Sudoku(values_to_set).fill_with_grids(child_grids)
+
+
+def create_one_child_random_elements(father, mother, values_to_set):
+    """
+    Concretely create a child from both parents. In our case we take a group of grids from father and another one from
+    mother with a randomly selected crossover point
+    :param father: (object) one of the 2 elements used to build/generate a new one
+    :param mother: (object) one of the 2 elements used to build/generate a new one
+    :param values_to_set: the values we have to set to init the objects
+    :return: (object) a child which is the combination of both parents
+    """
+    # Avoid having only the whole father or the whole mother
+    sudoku_size = father.size()
+    elements_from_mother = np.random.randint(0, sudoku_size, np.random.randint(1, sudoku_size - 1))
+
+    child_grids = []
+    for i in range(sudoku_size):
+        if i in elements_from_mother:
+            child_grids.append(mother.grids()[i])
+        else:
+            child_grids.append(father.grids()[i])
     return Sudoku(values_to_set).fill_with_grids(child_grids)
 
 

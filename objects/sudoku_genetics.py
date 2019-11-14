@@ -60,14 +60,12 @@ class SudokuGA(object):
         best_data = []
         worst_data = []
         found = False
-        nb_generations_done = 0
         overall_nb_generations_done = 0
         restart_counter = 0
 
-        while not found:
+        while overall_nb_generations_done < self._max_nb_generations and not found:
             new_population = ga_utils.create_generation(self._population_size, values_to_set)
 
-            overall_nb_generations_done += nb_generations_done
             nb_generations_done = 0
             remember_the_best = 0
             nb_generations_without_improvement = 0
@@ -102,12 +100,14 @@ class SudokuGA(object):
                     next_breeders = ga_utils.pick_from_population(ranked_population, self._selection_rate,
                                                                   self._random_selection_rate)
 
-                    children = ga_utils.create_children(next_breeders, self._nb_children)
+                    children = ga_utils.create_children_random_parents(next_breeders, self._nb_children)
                     new_population = ga_utils.mutate_population(children, self._mutation_rate)
 
                     nb_generations_done += 1
+                    overall_nb_generations_done += 1
                 else:
-                    print("Problem solved after {} generations !!! Solution found is:".format(nb_generations_done))
+                    print("Problem solved after {} generations ({} overall generations)!!! Solution found is:".
+                          format(nb_generations_done, overall_nb_generations_done))
                     best_solution.display()
                     found = True
                     print("It took {} to solve it".format(tools.get_human_readable_time(self._start_time, time())))
