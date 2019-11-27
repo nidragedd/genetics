@@ -1,3 +1,5 @@
+https://github.com/nidragedd/genetics/workflows/CI%20Tests/badge.svg
+    
 # DISCLAIMER
 * This project is only for personal challenge and educational purpose, no other pretention than those ones.
 * I could have used some libs such as [pyevolve](http://pyevolve.sourceforge.net/) but the goal was more
