@@ -14,7 +14,7 @@ class PositionsTestCase(unittest.TestCase):
         self.assertEqual(0, positions.retrieve_row_id_from_position_and_size(0, self.sudoku_size))
         self.assertEqual(0, positions.retrieve_row_id_from_position_and_size(self.sudoku_size - 1, self.sudoku_size))
         self.assertEqual(1, positions.retrieve_row_id_from_position_and_size(self.sudoku_size, self.sudoku_size))
-        self.assertEqual(1, positions.retrieve_row_id_from_position_and_size(self.sudoku_size + 1, self.sudoku_size))
+        self.assertEqual(2, positions.retrieve_row_id_from_position_and_size(self.sudoku_size + 1, self.sudoku_size))
         self.assertEqual(2, positions.retrieve_row_id_from_position_and_size(self.sudoku_size * 2, self.sudoku_size))
         self.assertEqual(self.sudoku_size - 1, positions.retrieve_row_id_from_position_and_size((self.sudoku_size * self.sudoku_size) - 1, self.sudoku_size))
 
