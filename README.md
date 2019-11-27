@@ -1,4 +1,4 @@
-https://github.com/nidragedd/genetics/workflows/CI%20Tests/badge.svg
+![](https://github.com/nidragedd/genetics/workflows/CI%20Tests/badge.svg)
     
 # DISCLAIMER
 * This project is only for personal challenge and educational purpose, no other pretention than those ones.
